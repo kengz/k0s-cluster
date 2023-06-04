@@ -1,6 +1,6 @@
 # K0s cluster
 
-Private Kubernetes cluster setup.
+Private Kubernetes cluster setup on home lab.
 
 ## Installation
 
@@ -15,19 +15,27 @@ brew install k0sproject/tap/k0sctl
 
 ## Usage
 
-- [Setup a private Kubernetes cluster with k0sctl](https://kengz.gitbook.io/blog/setting-up-a-private-kubernetes-cluster-with-k0sctl) (Note: use [cluster/k0sctl.yaml](./cluster/k0sctl.yaml))
-- if you created `controller+worker` role from k0s, untaint master node(s) to make schedulable: `k taint nodes --all node-role.kubernetes.io/master-`
-- create local storage class: `kaf ./cluster/storage.yaml`
+### Setup K8s Cluster
+
+- [Setup a private Kubernetes cluster with k0sctl](https://kengz.gitbook.io/blog/setting-up-a-private-kubernetes-cluster-with-k0sctl) (Note: use [cluster/k0sctl.yaml](./cluster/k0sctl.yaml)):
 
 ```bash
 k0sctl apply --config cluster/k0sctl.yaml
 # save kubeconfig
 mkdir -p ~/.kube
 k0sctl kubeconfig --config cluster/k0sctl.yaml > ~/.kube/config
+chmod go-r ~/.kube/config
 k get nodes
 ```
 
-Continue setup below.
+- Install [Ceph Cluster via Helm chart](https://rook.io/docs/rook/v1.11/Helm-Charts/helm-charts/) for storage:
+
+```bash
+https://rook.io/docs/rook/v1.11/Helm-Charts/operator-chart/#installing
+helm repo add rook-release https://charts.rook.io/release
+helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
+helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
+```
 
 ### Weaviate
 
