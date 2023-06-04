@@ -31,10 +31,10 @@ k get nodes
 - Install [Ceph Cluster via Helm chart](https://rook.io/docs/rook/v1.11/Helm-Charts/helm-charts/) for storage:
 
 ```bash
-https://rook.io/docs/rook/v1.11/Helm-Charts/operator-chart/#installing
 helm repo add rook-release https://charts.rook.io/release
-helm install --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph
+helm upgrade -i --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f cluster/rook-values.yaml
 helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
+kubectl --namespace rook-ceph get cephcluster
 ```
 
 ### Weaviate
@@ -44,8 +44,6 @@ Install [Weaviate vector database](https://weaviate.io/developers/weaviate/insta
 ```bash
 k create namespace weaviate
 kcn weaviate
-# create PV so helm chart below can use it for PVC
-kaf weaviate/pv.yaml
 # install weaviate
 helm upgrade -i weaviate weaviate/weaviate -n weaviate -f ./weaviate/values.yaml
 ```

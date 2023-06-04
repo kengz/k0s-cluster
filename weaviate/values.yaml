@@ -39,7 +39,7 @@ args:
 # Scale replicas of Weaviate. Note that as of v1.8.0 dynamic scaling is limited
 # to cases where no data is imported yet. Scaling down after importing data may
 # break usability. Full dynamic scalability will be added in a future release.
-replicas: 2
+replicas: 3
 resources:
   {}
   # requests:
@@ -60,7 +60,7 @@ serviceAccountName:
 # created, instead the one defined in fullnameOverride will be used
 storage:
   size: 32Gi
-  storageClassName: "local-storage"
+  storageClassName: ""
 
 # The service controls how weaviate is exposed to the outside world. If you
 # don't want a public load balancer, you can also choose 'ClusterIP' to make
