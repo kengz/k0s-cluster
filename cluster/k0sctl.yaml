@@ -10,6 +10,7 @@ spec:
         port: 22
         keyPath: ~/.ssh/id_rsa
       role: controller+worker
+      noTaints: true # enable scheduling on master
     - ssh:
         address: 192.168.86.251
         user: rl
@@ -22,3 +23,41 @@ spec:
         port: 1337
         keyPath: ~/.ssh/id_rsa
       role: worker
+  # install Helm charts in k0s https://docs.k0sproject.io/v1.23.6+k0s.2/helm-charts/
+  k0s:
+    config:
+      apiVersion: k0s.k0sproject.io/v1beta1
+      kind: ClusterConfig
+      metadata:
+        name: k0s-cluster
+      spec:
+        extensions:
+          storage:
+            type: openebs_local_storage
+          helm:
+            repositories:
+              - name: stable
+                url: https://charts.helm.sh/stable
+              - name: prometheus-community
+                url: https://prometheus-community.github.io/helm-charts
+              - name: grafana
+                url: https://grafana.github.io/helm-charts
+            charts:
+              - name: prometheus-stack
+                chartname: prometheus-community/prometheus
+                version: "14.6.1"
+                values: |
+                  alertmanager:
+                    persistentVolume:
+                      enabled: false
+                  server:
+                    persistentVolume:
+                      enabled: false
+                namespace: default
+              - name: grafana
+                chartname: grafana/grafana
+                version: "6.16.2"
+                values: |
+                  persistence:
+                    enabled: false
+                namespace: default

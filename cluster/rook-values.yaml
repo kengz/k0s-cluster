@@ -1,2 +1,0 @@
-csi:
-  kubeletDirPath: /var/lib/k0s/kubelet

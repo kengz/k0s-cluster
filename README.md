@@ -22,7 +22,6 @@ brew install k0sproject/tap/k0sctl
 ```bash
 k0sctl apply --config cluster/k0sctl.yaml
 # save kubeconfig
-mkdir -p ~/.kube
 k0sctl kubeconfig --config cluster/k0sctl.yaml > ~/.kube/config
 chmod go-r ~/.kube/config
 k get nodes
