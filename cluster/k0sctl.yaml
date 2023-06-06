@@ -10,7 +10,7 @@ spec:
         port: 22
         keyPath: ~/.ssh/id_rsa
       role: controller+worker
-      noTaints: true # enable scheduling on master
+      noTaints: true
     - ssh:
         address: 192.168.86.251
         user: rl
@@ -31,17 +31,26 @@ spec:
       metadata:
         name: k0s-cluster
       spec:
+        api:
+          address: 192.168.86.252
+          sans:
+            - 192.168.86.252
+        storage:
+          etcd:
+            externalCluster: null
+            peerAddress: 192.168.86.252
+          type: etcd
         extensions:
           storage:
             type: openebs_local_storage
           helm:
             repositories:
-              - name: stable
-                url: https://charts.helm.sh/stable
               - name: prometheus-community
                 url: https://prometheus-community.github.io/helm-charts
               - name: grafana
                 url: https://grafana.github.io/helm-charts
+              - name: openebs-cstor
+                url: https://openebs.github.io/cstor-operators
             charts:
               - name: prometheus-stack
                 chartname: prometheus-community/prometheus
@@ -53,11 +62,24 @@ spec:
                   server:
                     persistentVolume:
                       enabled: false
-                namespace: default
+                namespace: monitoring
               - name: grafana
                 chartname: grafana/grafana
                 version: "6.16.2"
                 values: |
                   persistence:
                     enabled: false
-                namespace: default
+                namespace: monitoring
+              # - name: cert-manager
+              #   chartname: cert-manager/cert-manager
+              #   version: "1.8.0"
+              #   values: |
+              #     installCRDs: true
+              #   namespace: cert-manager
+              - name: openebs-cstor
+                chartname: openebs-cstor/cstor
+                version: "3.1.0"
+                values: |
+                  csiNode:
+                    kubeletDir: /var/lib/k0s/kubelet/
+                namespace: openebs

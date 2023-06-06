@@ -27,13 +27,10 @@ chmod go-r ~/.kube/config
 k get nodes
 ```
 
-- Install [Ceph Cluster via Helm chart](https://rook.io/docs/rook/v1.11/Helm-Charts/helm-charts/) for storage:
+To reset:
 
 ```bash
-helm repo add rook-release https://charts.rook.io/release
-helm upgrade -i --create-namespace --namespace rook-ceph rook-ceph rook-release/rook-ceph -f cluster/rook-values.yaml
-helm install --create-namespace --namespace rook-ceph rook-ceph-cluster --set operatorNamespace=rook-ceph rook-release/rook-ceph-cluster
-kubectl --namespace rook-ceph get cephcluster
+k0sctl reset --config cluster/k0sctl.yaml
 ```
 
 ### Weaviate
