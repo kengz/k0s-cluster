@@ -38,13 +38,28 @@ spec:
             type: openebs_local_storage
           helm:
             repositories:
+              - name: cert-manager
+                url: https://charts.jetstack.io
+              - name: openebs-cstor
+                url: https://openebs.github.io/cstor-operators
               - name: prometheus-community
                 url: https://prometheus-community.github.io/helm-charts
               - name: grafana
                 url: https://grafana.github.io/helm-charts
-              - name: openebs-cstor
-                url: https://openebs.github.io/cstor-operators
             charts:
+              - name: cert-manager
+                chartname: cert-manager/cert-manager
+                version: "1.8.0"
+                values: |
+                  installCRDs: true
+                namespace: cert-manager
+              - name: openebs-cstor
+                chartname: openebs-cstor/cstor
+                version: "3.1.0"
+                values: |
+                  csiNode:
+                    kubeletDir: /var/lib/k0s/kubelet/
+                namespace: openebs
               - name: prometheus-stack
                 chartname: prometheus-community/prometheus
                 version: "14.6.1"
@@ -63,16 +78,3 @@ spec:
                   persistence:
                     enabled: false
                 namespace: monitoring
-              # - name: cert-manager
-              #   chartname: cert-manager/cert-manager
-              #   version: "1.8.0"
-              #   values: |
-              #     installCRDs: true
-              #   namespace: cert-manager
-              - name: openebs-cstor
-                chartname: openebs-cstor/cstor
-                version: "3.1.0"
-                values: |
-                  csiNode:
-                    kubeletDir: /var/lib/k0s/kubelet/
-                namespace: openebs
