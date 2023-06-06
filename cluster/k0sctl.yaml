@@ -31,15 +31,8 @@ spec:
       metadata:
         name: k0s-cluster
       spec:
-        api:
-          address: 192.168.86.252
-          sans:
-            - 192.168.86.252
-        storage:
-          etcd:
-            externalCluster: null
-            peerAddress: 192.168.86.252
-          type: etcd
+        network:
+          provider: calico
         extensions:
           storage:
             type: openebs_local_storage

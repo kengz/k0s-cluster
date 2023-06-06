@@ -22,8 +22,7 @@ brew install k0sproject/tap/k0sctl
 ```bash
 k0sctl apply --config cluster/k0sctl.yaml
 # save kubeconfig
-k0sctl kubeconfig --config cluster/k0sctl.yaml > ~/.kube/config
-chmod go-r ~/.kube/config
+k0sctl kubeconfig --config cluster/k0sctl.yaml > ~/.kube/config && chmod go-r ~/.kube/config
 k get nodes
 ```
 
@@ -43,9 +42,3 @@ kcn weaviate
 # install weaviate
 helm upgrade -i weaviate weaviate/weaviate -n weaviate -f ./weaviate/values.yaml
 ```
-
-## TODO
-
-- do without hostpath in PV
-- dynamic pv across nodes
-- actually do k0s EBS
