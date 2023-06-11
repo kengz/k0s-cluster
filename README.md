@@ -1,6 +1,6 @@
 # K0s cluster
 
-Private Kubernetes cluster setup on a home lab.
+Private Kubernetes cluster setup on a home lab using [k0sctl](https://github.com/k0sproject/k0sctl) and Helm charts.
 
 ## Installation
 
@@ -68,17 +68,6 @@ Additionally, install [Lens](https://k8slens.dev) for GUI monitoring and access 
   - run `kubectl port-forward -n monitoring svc/prometheus-grafana 6060:80` and visit http://localhost:6060 to find the preconfigured dashboards
 - [prometheus](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
   - run `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090` and visit http://localhost:9090
-
-### Weaviate
-
-Install [Weaviate vector database](https://weaviate.io/developers/weaviate/installation/kubernetes) using local values file and:
-
-```bash
-k create namespace weaviate
-kcn weaviate
-# install weaviate
-helm upgrade -i weaviate weaviate/weaviate -n weaviate -f ./weaviate/values.yaml
-```
 
 ### Troubleshoot
 
