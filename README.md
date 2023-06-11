@@ -42,9 +42,9 @@ Install the cluster components with Helm:
 - [cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
 - [metrics-server](https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server)
 - [kubernetes-dashboard](https://github.com/kubernetes/dashboard#access)
-- [Grafana Loki-stack](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack) for logging
+- [Loki (scalable)](https://github.com/grafana/loki/tree/main/production/helm/loki) for logging (Grafana included with kube-prometheus-stack)
   - [Elasticsearch charts](https://github.com/elastic/helm-charts) (hence ELK) have been deprecated in favor of their licensed ECK; plus Loki is much easier to run and maintain
-- [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
+- [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring (includes Grafana)
 
 ```bash
 bash ./cluster/cluster-addons.sh
@@ -59,23 +59,21 @@ Additionally, install [Lens](https://k8slens.dev) for GUI monitoring and access 
 - [Kubernetes Dashboard](https://github.com/kubernetes/dashboard#access)
   - get token: `kubectl -n kubernetes-dashboard create token admin-user`
   - run `kubectl proxy` and visit http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
-- [loki-grafana](https://github.com/grafana/helm-charts/tree/main/charts/loki-stack) for logging
-  - username is `admin`
-  - get password: `kubectl get secret loki-grafana -n logging -o jsonpath="{.data.admin-password}" | base64 --decode ; echo`
-  - run `kubectl port-forward -n logging svc/loki-grafana 7070:80` and visit http://localhost:7070
-- [prometheus-grafana](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
+- [Grafana](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster and logging monitoring
+  - data sources include kube-state-metrics, node-exporter, prometheus, and custom-added loki for logs
   - username is `admin`, password is `prom-operator`
   - run `kubectl port-forward -n monitoring svc/prometheus-grafana 6060:80` and visit http://localhost:6060 to find the preconfigured dashboards
-- [prometheus](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
+  - (one-time) [import](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) this [Loki Kubernetes Logs](https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs/) dashboard
+- [Prometheus](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
   - run `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090` and visit http://localhost:9090
 
 ### Troubleshoot
 
 - delete pod stuck in terminating state:
   ```bash
-  kubectl delete pod <PODNAME> --grace-period=0 --force
+  kubectl delete pod --grace-period=0 --force <PODNAME>
   ```
 - decode secret:
   ```bash
-  kubectl get secret loki-grafana -n logging -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+  kubectl get secret <SECRETNAME> -n <NAMESPACE> -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
   ```

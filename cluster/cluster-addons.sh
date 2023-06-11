@@ -1,7 +1,7 @@
 # /bin/bash --login
 
-# kill on error or SIGTERM
-set -e
+# echo cmd; kill on error or SIGTERM
+set -x -e
 trap 'kill -TERM $PID' TERM INT
 
 # cert manager
@@ -20,14 +20,15 @@ helm upgrade -i cert-manager jetstack/cert-manager -n cert-manager --create-name
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
 kubectl apply -f ./cluster/dashboard-admin-user.yaml
 
-# use Grafana Loki stack for logging
+# use Loki (scalable) for logging (Grafana included with kube-prometheus-stack)
 helm repo add grafana https://grafana.github.io/helm-charts
-helm upgrade -i loki grafana/loki-stack -n logging --create-namespace --version '2.9.10' -f ./cluster/loki-values.yaml
+helm upgrade -i loki grafana/loki -n logging --create-namespace --version '5.6.4' -f ./cluster/loki-values.yaml
+helm upgrade -i promtail grafana/promtail -n logging --version '6.11.3'
 
-# prometheus for monitoring
+# Prometheus for cluster monitoring (includes Grafana)
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm upgrade -i prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace --version '46.8.0'
+helm upgrade -i prometheus prometheus-community/kube-prometheus-stack -n monitoring --create-namespace --version '46.8.0' -f ./cluster/prometheus-values.yaml
 # adapter for k8s HPA custom metrics
 helm upgrade -i prom-adapter prometheus-community/prometheus-adapter -n monitoring --version '4.2.0'
-# pushgateway
+# pushgateway for app metrics
 helm upgrade -i prom-pushgateway prometheus-community/prometheus-pushgateway -n monitoring --version '2.2.0' -f ./cluster/pushgateway-values.yaml

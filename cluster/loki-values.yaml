@@ -1,2 +1,24 @@
-grafana:
+# for loki scalable mode https://grafana.com/docs/loki/latest/fundamentals/architecture/deployment-modes/#simple-scalable-deployment-mode
+# need to configure storage https://github.com/grafana/loki/blob/main/production/helm/loki/values.yaml#L253
+# or try with minio first
+minio:
   enabled: true
+loki:
+  storage:
+    type: s3
+    s3:
+      s3: null
+      endpoint: null
+      region: null
+      secretAccessKey: null
+      accessKeyId: null
+      s3ForcePathStyle: false
+      insecure: false
+  # configure retention https://grafana.com/docs/loki/latest/operations/storage/retention/
+  # fields: https://grafana.com/docs/loki/latest/configuration/
+  compactor:
+    shared_store: filesystem
+    retention_enabled: true
+  limits_config:
+    retention_period: 744h
+  auth_enabled: false

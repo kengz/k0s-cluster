@@ -1,0 +1,12 @@
+grafana:
+  adminPassword: prom-operator
+
+  ## Configure additional grafana datasources (passed through tpl)
+  ## ref: http://docs.grafana.org/administration/provisioning/#datasources
+  additionalDataSources:
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki-gateway.logging.svc.cluster.local
+      version: 1
+      isDefault: false
