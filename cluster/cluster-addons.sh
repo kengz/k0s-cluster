@@ -8,25 +8,21 @@ trap 'kill -TERM $PID' TERM INT
 helm repo add jetstack https://charts.jetstack.io
 helm upgrade -i cert-manager jetstack/cert-manager -n cert-manager --create-namespace --version 'v1.12.1' --set installCRDs=true
 
-# k8s metrics server (some k8s providers have this pre-installed)
-# helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
-# helm upgrade -i metrics-server metrics-server/metrics-server -n kube-system --version '3.10.0'
-
 # cluster autoscaler (cloud-dependent): https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
 # helm repo add autoscaler https://kubernetes.github.io/autoscaler
 # helm upgrade -i cluster-autoscaler autoscaler/cluster-autoscaler -n kube-system
 
-# k8s dashboard; for access, see https://github.com/kubernetes/dashboard#access
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+# k8s metrics server (some k8s providers have this pre-installed)
+# helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
+# helm upgrade -i metrics-server metrics-server/metrics-server -n kube-system --version '3.10.0'
 
-# Elastic search for logging
-# ECK operator: https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-install-helm.html
-helm repo add elastic https://helm.elastic.co
-helm upgrade -i elastic-operator elastic/eck-operator -n elastic-system --create-namespace --version '2.8.0'
-# then install ECK stack for logging: https://artifacthub.io/packages/helm/elastic/eck-stack
-# TODO ugh wants license wow the fuck https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-licensing.html#k8s-add-license
-# https://github.com/elastic/cloud-on-k8s/issues/6261
-helm upgrade -i eck-stack elastic/eck-stack -n elastic-stack --create-namespace --version '0.5.0' -f ./cluster/eck-stack-values.yaml
+# k8s dashboard; in general, use Lens https://k8slens.dev (free for personal)
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl apply -f ./cluster/dashboard-admin-user.yaml
+
+# use Grafana Loki stack for logging
+helm repo add grafana https://grafana.github.io/helm-charts
+helm upgrade -i loki grafana/loki-stack -n logging --create-namespace --version '2.9.10' -f ./cluster/loki-values.yaml
 
 # prometheus for monitoring
 helm repo add prometheus-community https://prometheus-community.github.io/helm-charts

@@ -41,13 +41,12 @@ args:
 # break usability. Full dynamic scalability will be added in a future release.
 replicas: 3
 resources:
-  {}
-  # requests:
-  #   cpu: '500m'
-  #   memory: '300Mi'
-  # limits:
-  #   cpu: '1000m'
-  #   memory: '1Gi'
+  requests:
+    cpu: "500m"
+    memory: "300Mi"
+  limits:
+    cpu: "1000m"
+    memory: "1Gi"
 
 # Add a service account ot the Weaviate pods if you need Weaviate to have permissions to
 # access kubernetes resources or cloud provider resources. For example for it to have
@@ -59,7 +58,7 @@ serviceAccountName:
 # storage.fullnameOverride field set, then the default pvc will not be
 # created, instead the one defined in fullnameOverride will be used
 storage:
-  size: 32Gi
+  size: 10Gi
   storageClassName: ""
 
 # The service controls how weaviate is exposed to the outside world. If you
