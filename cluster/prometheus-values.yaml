@@ -1,5 +1,13 @@
 grafana:
-  adminPassword: prom-operator
+  # adminPassword: prom-operator
+  # configure anonymous access
+  grafana.ini:
+    auth.anonymous:
+      enabled: true
+      org_name: Main Org.
+      org_role: Editor
+    auth:
+      disable_login_form: true
 
   ## Configure additional grafana datasources (passed through tpl)
   ## ref: http://docs.grafana.org/administration/provisioning/#datasources
