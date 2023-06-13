@@ -1,4 +1,5 @@
 serviceMonitor:
   enabled: true
   additionalLabels:
+    # match kube-prometheus-stack scrape config
     release: prometheus

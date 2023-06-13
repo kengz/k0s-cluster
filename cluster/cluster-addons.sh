@@ -32,3 +32,5 @@ helm upgrade -i prometheus prometheus-community/kube-prometheus-stack -n monitor
 helm upgrade -i prom-adapter prometheus-community/prometheus-adapter -n monitoring --version '4.2.0'
 # pushgateway for app metrics
 helm upgrade -i prom-pushgateway prometheus-community/prometheus-pushgateway -n monitoring --version '2.2.0' -f ./cluster/pushgateway-values.yaml
+# blackbox exporter for uptime monitoring
+helm install blackbox prometheus-community/prometheus-blackbox-exporter -n monitoring --version '7.10.0' -f ./cluster/blackbox-values.yaml

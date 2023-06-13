@@ -63,7 +63,7 @@ Additionally, install [Lens](https://k8slens.dev) for GUI monitoring and access 
   - data sources include kube-state-metrics, node-exporter, prometheus, and custom-added loki for logs
   - username is `admin`, password is `prom-operator`
   - run `kubectl port-forward -n monitoring svc/prometheus-grafana 6060:80` and visit http://localhost:6060 to find the preconfigured dashboards
-  - (one-time) [import](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) this [Loki Kubernetes Logs](https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs/) dashboard
+  - (one-time) [import](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) this [Loki Kubernetes Logs](https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs/) and this [Blackbox exporter](https://grafana.com/grafana/dashboards/7587-prometheus-blackbox-exporter/) dashboards
 - [Prometheus](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
   - run `kubectl port-forward -n monitoring svc/prometheus-kube-prometheus-prometheus 9090:9090` and visit http://localhost:9090
 
