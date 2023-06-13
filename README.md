@@ -17,7 +17,9 @@ brew install k0sproject/tap/k0sctl
 
 ### Setup K8s Cluster
 
-- [Setup a private Kubernetes cluster with k0sctl](https://kengz.gitbook.io/blog/setting-up-a-private-kubernetes-cluster-with-k0sctl) (Note: use [./cluster/k0sctl.yaml](./cluster/k0sctl.yaml)):
+> See detailed blog post [Setup a private Kubernetes cluster with k0sctl](https://kengz.gitbook.io/blog/setting-up-a-private-kubernetes-cluster-with-k0sctl)
+
+Inspect/configure [./cluster/k0sctl.yaml](./cluster/k0sctl.yaml) and run:
 
 ```bash
 k0sctl apply --config cluster/k0sctl.yaml
@@ -36,15 +38,29 @@ k0sctl reset --config cluster/k0sctl.yaml
 
 ### Install Cluster Addons
 
+> See detailed blog post [Setting up Kubernetes Addons](https://kengz.gitbook.io/blog/setting-up-kubernetes-addons).
+
 Install the cluster components with Helm:
 
-- [cert-manager](https://cert-manager.io/docs/installation/helm/)
-- [cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler)
-- [metrics-server](https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server)
-- [kubernetes-dashboard](https://github.com/kubernetes/dashboard#access)
-- [Loki (scalable)](https://github.com/grafana/loki/tree/main/production/helm/loki) for logging (Grafana included with kube-prometheus-stack)
-  - [Elasticsearch charts](https://github.com/elastic/helm-charts) (hence ELK) have been deprecated in favor of their licensed ECK; plus Loki is much easier to run and maintain
-- [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring (includes Grafana)
+Loki (scalable): to aggregate and index all logs in the cluster, with retention policy; the logs are searchable in Grafana. Additionally:
+promtail to aggregate logs
+Note: Elasticsearch charts (hence ELK) have been deprecated in favor of their licensed ECK; plus Loki is much easier to run and maintain
+kube-prometheus-stack: for cluster monitoring with many useful preconfigured cluster Prometheus metrics in Grafana dashboards. Additionally:
+prometheus-adapter for custom metrics API, e.g. for HPA to scale using custom-defined metrics.
+Prometheus Pushgateway to push application metrics
+Blackbox Exporter to probe endpoints for uptime monitoring
+
+- [cert-manager](https://cert-manager.io/docs/installation/helm/): certificate management
+- [cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler): to dynamically autoscale cluster by adding or reducing nodes
+- [metrics-server](https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server): for monitoring and and HPA (HorizontalPodAutoscaler) to work
+- [kubernetes-dashboard](https://github.com/kubernetes/dashboard#access): basic cluster monitoring (if Lens is not available)
+- [Loki (scalable)](https://github.com/grafana/loki/tree/main/production/helm/loki) to aggregate and index all logs in the cluster, with retention policy; the logs are searchable in Grafana. Additionally:
+  - [promtail](https://grafana.com/docs/loki/latest/clients/promtail/) to aggregate logs
+  - Note: [Elasticsearch charts](https://github.com/elastic/helm-charts) (hence ELK) have been deprecated in favor of their licensed ECK; plus Loki is much easier to run and maintain
+- [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring with many useful preconfigured cluster Prometheus metrics in Grafana dashboards. Additionally:
+  - [prometheus-adapter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-adapter) for custom metrics API, e.g. for HPA to scale using custom-defined metrics.
+  - [prometheus-pushgateway](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-pushgateway) to push application metrics
+  - [prometheus-blackbox-exporter](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-blackbox-exporter) to probe endpoints for uptime monitoring
 
 ```bash
 bash ./cluster/cluster-addons.sh
@@ -54,6 +70,8 @@ Additionally, install [Lens](https://k8slens.dev) for GUI monitoring and access 
 
 ### Accessing Dashboards
 
+> See more on blog post [Setting up Kubernetes Addons](https://kengz.gitbook.io/blog/setting-up-kubernetes-addons).
+
 - [Lens](https://k8slens.dev)
   - just open the app, it will use `~/.kube/config` to connect
 - [Kubernetes Dashboard](https://github.com/kubernetes/dashboard#access)
@@ -61,7 +79,6 @@ Additionally, install [Lens](https://k8slens.dev) for GUI monitoring and access 
   - run `kubectl proxy` and visit http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/
 - [Grafana](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster and logging monitoring
   - data sources include kube-state-metrics, node-exporter, prometheus, and custom-added loki for logs
-  - username is `admin`, password is `prom-operator`
   - run `kubectl port-forward -n monitoring svc/prometheus-grafana 6060:80` and visit http://localhost:6060 to find the preconfigured dashboards
   - (one-time) [import](https://grafana.com/docs/grafana/latest/dashboards/manage-dashboards/#import-a-dashboard) this [Loki Kubernetes Logs](https://grafana.com/grafana/dashboards/15141-kubernetes-service-logs/) and this [Blackbox exporter](https://grafana.com/grafana/dashboards/7587-prometheus-blackbox-exporter/) dashboards
 - [Prometheus](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for cluster monitoring
