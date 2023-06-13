@@ -42,14 +42,6 @@ k0sctl reset --config cluster/k0sctl.yaml
 
 Install the cluster components with Helm:
 
-Loki (scalable): to aggregate and index all logs in the cluster, with retention policy; the logs are searchable in Grafana. Additionally:
-promtail to aggregate logs
-Note: Elasticsearch charts (hence ELK) have been deprecated in favor of their licensed ECK; plus Loki is much easier to run and maintain
-kube-prometheus-stack: for cluster monitoring with many useful preconfigured cluster Prometheus metrics in Grafana dashboards. Additionally:
-prometheus-adapter for custom metrics API, e.g. for HPA to scale using custom-defined metrics.
-Prometheus Pushgateway to push application metrics
-Blackbox Exporter to probe endpoints for uptime monitoring
-
 - [cert-manager](https://cert-manager.io/docs/installation/helm/): certificate management
 - [cluster-autoscaler](https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler): to dynamically autoscale cluster by adding or reducing nodes
 - [metrics-server](https://github.com/kubernetes-sigs/metrics-server/tree/master/charts/metrics-server): for monitoring and and HPA (HorizontalPodAutoscaler) to work
