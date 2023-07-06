@@ -9,11 +9,16 @@ helm repo add jetstack https://charts.jetstack.io
 helm upgrade -i cert-manager jetstack/cert-manager -n cert-manager --create-namespace --version 'v1.12.1' --set installCRDs=true
 
 # ingress controller for k0s (helm charts in k0s can be finicky and won't install sometimes)
+# traefik: https://github.com/traefik/traefik-helm-chart
 helm repo add traefik https://traefik.github.io/charts
-helm upgrade -i traefik traefik/traefik -n ingress --create-namespace --version '20.5.3'
+helm upgrade -i traefik traefik/traefik -n ingress --create-namespace --version '23.1.0'
+# ref: https://rpi4cluster.com/k3s/k3s-nw-setting/
+# ref: https://docs.k0sproject.io/v1.21.9+k0s.0/examples/traefik-ingress/
 helm repo add metallb https://metallb.github.io/metallb
 helm upgrade -i metallb metallb/metallb -n ingress --create-namespace --version '0.13.10'
-kubectl apply -n ingress -f ./cluster/metallb-cr.yaml
+kubectl apply -n ingress -f ./cluster/ingress/metallb-cr.yaml
+kubectl apply -n ingress -f ./cluster/ingress/traefik-dashboard.yaml
+kubectl apply -n ingress -f ./cluster/ingress/whoami.yaml
 
 # cluster autoscaler (cloud-dependent): https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
 # helm repo add autoscaler https://kubernetes.github.io/autoscaler
