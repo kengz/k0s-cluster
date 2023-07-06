@@ -8,6 +8,13 @@ trap 'kill -TERM $PID' TERM INT
 helm repo add jetstack https://charts.jetstack.io
 helm upgrade -i cert-manager jetstack/cert-manager -n cert-manager --create-namespace --version 'v1.12.1' --set installCRDs=true
 
+# ingress controller for k0s (helm charts in k0s can be finicky and won't install sometimes)
+helm repo add traefik https://traefik.github.io/charts
+helm upgrade -i traefik traefik/traefik -n ingress --create-namespace --version '20.5.3'
+helm repo add metallb https://metallb.github.io/metallb
+helm upgrade -i metallb metallb/metallb -n ingress --create-namespace --version '0.13.10'
+kubectl apply -n ingress -f ./cluster/metallb-cr.yaml
+
 # cluster autoscaler (cloud-dependent): https://github.com/kubernetes/autoscaler/tree/master/cluster-autoscaler
 # helm repo add autoscaler https://kubernetes.github.io/autoscaler
 # helm upgrade -i cluster-autoscaler autoscaler/cluster-autoscaler -n kube-system
