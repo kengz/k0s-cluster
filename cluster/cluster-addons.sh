@@ -46,3 +46,5 @@ helm upgrade -i prom-adapter prometheus-community/prometheus-adapter -n monitori
 helm upgrade -i prom-pushgateway prometheus-community/prometheus-pushgateway -n monitoring --version '2.2.0' -f ./cluster/pushgateway-values.yaml
 # blackbox exporter for uptime monitoring
 helm install blackbox prometheus-community/prometheus-blackbox-exporter -n monitoring --version '7.10.0' -f ./cluster/blackbox-values.yaml
+# grafana dashboards
+kubectl apply -f cluster/grafana-dashboards/ -n monitoring
