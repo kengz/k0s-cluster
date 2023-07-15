@@ -36,6 +36,8 @@ To reset:
 k0sctl reset --config cluster/k0sctl.yaml
 ```
 
+> It's common to encounter `host key mismatch: knownhosts: key mismatch` error. In that case, remove the host entries in `~/.ssh/known_hosts` and retry.
+
 ### Install Cluster Addons
 
 > See detailed blog post [Setting up Kubernetes Addons](https://kengz.gitbook.io/blog/setting-up-kubernetes-addons).

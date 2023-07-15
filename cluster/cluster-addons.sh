@@ -16,6 +16,8 @@ helm upgrade -i traefik traefik/traefik -n ingress --create-namespace --version 
 # ref: https://docs.k0sproject.io/v1.21.9+k0s.0/examples/traefik-ingress/
 helm repo add metallb https://metallb.github.io/metallb
 helm upgrade -i metallb metallb/metallb -n ingress --create-namespace --version '0.13.10'
+# wait for resources
+sleep 10
 kubectl apply -n ingress -f ./cluster/ingress/metallb-cr.yaml
 kubectl apply -n ingress -f ./cluster/ingress/traefik-dashboard.yaml
 kubectl apply -n ingress -f ./cluster/ingress/whoami.yaml
